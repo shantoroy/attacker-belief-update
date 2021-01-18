@@ -1,0 +1,9 @@
+,OS,Apps,Initial Probability
+0,Red Hat 8,[],0.125
+1,Red Hat 8,['Apache'],0.125
+2,Red Hat 8,['IIS'],0.125
+3,Red Hat 8,"['Apache', 'IIS']",0.125
+4,Win 7,[],0.125
+5,Win 7,['Apache'],0.125
+6,Win 7,['IIS'],0.125
+7,Win 7,"['Apache', 'IIS']",0.125
