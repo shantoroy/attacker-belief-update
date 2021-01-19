@@ -6,15 +6,22 @@ import plotly.graph_objs as go
 import json
 import ast
 
+import sys
+sys.path.append('scripts/')
+
 from network_creation import network_creation
 from network_plot import network_plot
 from belief_update import initial_belief_calc, belief_update_one_observation 
 from belief_update import create_observation
 from instructions import st_instruction_page
 
-network_data = "network.csv"
-observation_data = "observation.csv"
-init_conf_data = "init_conf.csv"
+favicon = "icon/favicon.ico"
+st.set_page_config(page_title="Attacker's Belief Update", \
+            page_icon = favicon, layout = 'wide', initial_sidebar_state = 'auto')
+
+network_data = "data/network.csv"
+observation_data = "data/observation.csv"
+init_conf_data = "data/init_conf.csv"
 
 def network_details(win, linux):
     network = network_creation(win, linux)
@@ -121,7 +128,7 @@ def st_create_observation():
     try:
         num_of_observation = int(st.sidebar.text_input("Input No. of Observations", "5"))
         observation_list = create_observation(observation_conf, num_of_observation)
-        observation_df = pd.DataFrame(observation_list, columns = ['TTL', 'WS', 'Banner'])
+        observation_df = pd.DataFrame(observation_list)
         st.table(observation_df)
         observation_df.to_csv(observation_data)
     except:
@@ -135,51 +142,95 @@ def st_belief_update():
                 and plot. The Belief updating procedure matures over the\
                 number of Observations.")
     obs_data = pd.read_csv(observation_data)
-    observation_list = obs_data.values.tolist()
-    observation_list = [[int(i[1]), int(i[2]), i[3]] for i in observation_list]
+    obs_data = obs_data.fillna(0)
+    # for OS only
+    observation_list = obs_data.T.to_dict().values()
 
     conf_data = pd.read_csv(init_conf_data)
     os_list = conf_data["OS"].tolist()
     app_list = conf_data["Apps"].tolist()
     conf_set = [[i,ast.literal_eval(j)] for i,j in zip(os_list,app_list)]
     
-    updated_belief_set = []
     read_init_belief_set = pd.read_csv(init_conf_data)
     init_belief_set = read_init_belief_set["Initial Probability"].tolist()
 
-    initial_belief_set = init_belief_set.copy()
-    for obs in observation_list:
-        updated_belief_set.append(belief_update_one_observation(conf_set, obs, initial_belief_set))
-        initial_belief_set = updated_belief_set[-1]
+    update_target = st.sidebar.selectbox("Target Information (All/filtered Observations)",\
+                                    ["OS", "OS+App"])
 
-    belief_update_data = {}
-    belief_update_data.update({"Configurations" : conf_set})
-    belief_update_data.update({"Initial Belief" : init_belief_set})
-    for i in range(len(observation_list)):
-        belief_update_data.update({"obs. "+str(i+1) : updated_belief_set[i]})
-    belief_update_df = pd.DataFrame(belief_update_data)
+    if update_target == "OS":
+        updated_belief_set = []
+        initial_belief_set = init_belief_set.copy()
+        for obs in observation_list:
+            updated_belief_set.append(belief_update_one_observation(conf_set, obs, initial_belief_set))
+            initial_belief_set = updated_belief_set[-1]
 
-    plot_data = [init_belief_set] + updated_belief_set
-    obs_list = ["initial belief"]
-    for i in range(len(observation_list)):
-        obs_list.append("obs " + str(i+1))
-    x = range(len(obs_list))
-    data = []
-    fig = go.Figure()
-    for k in range(len(conf_set)):
-        y_list = [m[k] for m in plot_data]
-        fig.add_trace(go.Scatter(x=obs_list, y=y_list,
-                        mode='lines+markers',
-                        name=str(conf_set[k])))
-    
-    fig['layout'].update(height=600, width=950)
-    belief_update_output = st.sidebar.selectbox("Choose Output Type",\
-                                    ["Plot", "Table"])
-    if belief_update_output == "Plot":
-        st.plotly_chart(fig)
-    if belief_update_output == "Table":
-        st.table(belief_update_df)  
+        belief_update_data = {}
+        belief_update_data.update({"Configurations" : conf_set})
+        belief_update_data.update({"Initial Belief" : init_belief_set})
+        for i in range(len(observation_list)):
+            belief_update_data.update({"obs. "+str(i+1) : updated_belief_set[i]})
+        belief_update_df = pd.DataFrame(belief_update_data)
 
+        plot_data = [init_belief_set] + updated_belief_set
+        obs_list = ["initial belief"]
+        for i in range(len(observation_list)):
+            obs_list.append("obs " + str(i+1))
+        x = range(len(obs_list))
+        data = []
+        fig = go.Figure()
+        for k in range(len(conf_set)):
+            y_list = [m[k] for m in plot_data]
+            fig.add_trace(go.Scatter(x=obs_list, y=y_list,
+                            mode='lines+markers',
+                            name=str(conf_set[k])))
+        
+        fig['layout'].update(height=600, width=950)
+        belief_update_output = st.sidebar.selectbox("Choose Output Type",\
+                                        ["Plot", "Table"])
+        if belief_update_output == "Plot":
+            st.plotly_chart(fig)
+        if belief_update_output == "Table":
+            st.table(belief_update_df)  
+
+    # for OS + App
+    if update_target == "OS+App" and "App" in obs_data.columns:
+        observation_list_app = [i for i in observation_list if i["App"] != 0]
+        updated_belief_set = []
+        initial_belief_set = init_belief_set.copy()
+        for obs in observation_list_app:
+            updated_belief_set.append(belief_update_one_observation(conf_set, obs, initial_belief_set))
+            initial_belief_set = updated_belief_set[-1]
+
+        belief_update_data = {}
+        belief_update_data.update({"Configurations" : conf_set})
+        belief_update_data.update({"Initial Belief" : init_belief_set})
+        for i in range(len(observation_list_app)):
+            belief_update_data.update({"obs. "+str(i+1) : updated_belief_set[i]})
+        belief_update_df = pd.DataFrame(belief_update_data)
+
+        plot_data = [init_belief_set] + updated_belief_set
+        obs_list = ["initial belief"]
+        for i in range(len(observation_list_app)):
+            obs_list.append("obs " + str(i+1))
+        x = range(len(obs_list))
+        data = []
+        fig = go.Figure()
+        for k in range(len(conf_set)):
+            y_list = [m[k] for m in plot_data]
+            fig.add_trace(go.Scatter(x=obs_list, y=y_list,
+                            mode='lines+markers',
+                            name=str(conf_set[k])))
+        
+        fig['layout'].update(height=600, width=950)
+        belief_update_output = st.sidebar.selectbox("Choose Output Type",\
+                                        ["Plot", "Table"])
+        if belief_update_output == "Plot":
+            st.plotly_chart(fig)
+        if belief_update_output == "Table":
+            st.table(belief_update_df)  
+
+    else:
+        st.write("Only OS related Observations are available")
 
 
 def main():
@@ -221,10 +272,15 @@ def main():
             st.sidebar.write("Real Configuration: ", conf_dic[select_node][0]\
                                                +","+ conf_dic[select_node][1])
             sub_function = st.sidebar.selectbox("Choose from the following",\
-                                    ["Create Observations", "Updated Belief Info"])
+                                    ["Create Observations", "View Observations",\
+                                     "Updated Belief Info"])
 
             if sub_function == "Create Observations":
                 st_create_observation()
+            if sub_function == "View Observations":
+                updated_obs_data = pd.read_csv(observation_data)
+                del updated_obs_data["Unnamed: 0"]
+                st.table(updated_obs_data)
             if sub_function == "Updated Belief Info":
                 st_belief_update()
         
