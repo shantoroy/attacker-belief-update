@@ -1,0 +1,81 @@
+,OS,Apps,Initial Probability
+0,Win NT 6.x,[],0.0125
+1,Win NT 6.x,['Apache'],0.0125
+2,Win NT 6.x,['IIS'],0.0125
+3,Win NT 6.x,"['Apache', 'IIS']",0.0125
+4,Win NT 6.x,['Firefox'],0.0125
+5,Win NT 6.x,"['Apache', 'Firefox']",0.0125
+6,Win NT 6.x,"['IIS', 'Firefox']",0.0125
+7,Win NT 6.x,"['Apache', 'IIS', 'Firefox']",0.0125
+8,Win NT 6.x,['Chrome'],0.0125
+9,Win NT 6.x,"['Apache', 'Chrome']",0.0125
+10,Win NT 6.x,"['IIS', 'Chrome']",0.0125
+11,Win NT 6.x,"['Apache', 'IIS', 'Chrome']",0.0125
+12,Win NT 6.x,"['Firefox', 'Chrome']",0.0125
+13,Win NT 6.x,"['Apache', 'Firefox', 'Chrome']",0.0125
+14,Win NT 6.x,"['IIS', 'Firefox', 'Chrome']",0.0125
+15,Win NT 6.x,"['Apache', 'IIS', 'Firefox', 'Chrome']",0.0125
+16,Win NT 5.x,[],0.0125
+17,Win NT 5.x,['Apache'],0.0125
+18,Win NT 5.x,['IIS'],0.0125
+19,Win NT 5.x,"['Apache', 'IIS']",0.0125
+20,Win NT 5.x,['Firefox'],0.0125
+21,Win NT 5.x,"['Apache', 'Firefox']",0.0125
+22,Win NT 5.x,"['IIS', 'Firefox']",0.0125
+23,Win NT 5.x,"['Apache', 'IIS', 'Firefox']",0.0125
+24,Win NT 5.x,['Chrome'],0.0125
+25,Win NT 5.x,"['Apache', 'Chrome']",0.0125
+26,Win NT 5.x,"['IIS', 'Chrome']",0.0125
+27,Win NT 5.x,"['Apache', 'IIS', 'Chrome']",0.0125
+28,Win NT 5.x,"['Firefox', 'Chrome']",0.0125
+29,Win NT 5.x,"['Apache', 'Firefox', 'Chrome']",0.0125
+30,Win NT 5.x,"['IIS', 'Firefox', 'Chrome']",0.0125
+31,Win NT 5.x,"['Apache', 'IIS', 'Firefox', 'Chrome']",0.0125
+32,Linux_v3-11,[],0.0125
+33,Linux_v3-11,['Apache'],0.0125
+34,Linux_v3-11,['IIS'],0.0125
+35,Linux_v3-11,"['Apache', 'IIS']",0.0125
+36,Linux_v3-11,['Firefox'],0.0125
+37,Linux_v3-11,"['Apache', 'Firefox']",0.0125
+38,Linux_v3-11,"['IIS', 'Firefox']",0.0125
+39,Linux_v3-11,"['Apache', 'IIS', 'Firefox']",0.0125
+40,Linux_v3-11,['Chrome'],0.0125
+41,Linux_v3-11,"['Apache', 'Chrome']",0.0125
+42,Linux_v3-11,"['IIS', 'Chrome']",0.0125
+43,Linux_v3-11,"['Apache', 'IIS', 'Chrome']",0.0125
+44,Linux_v3-11,"['Firefox', 'Chrome']",0.0125
+45,Linux_v3-11,"['Apache', 'Firefox', 'Chrome']",0.0125
+46,Linux_v3-11,"['IIS', 'Firefox', 'Chrome']",0.0125
+47,Linux_v3-11,"['Apache', 'IIS', 'Firefox', 'Chrome']",0.0125
+48,BSD,[],0.0125
+49,BSD,['Apache'],0.0125
+50,BSD,['IIS'],0.0125
+51,BSD,"['Apache', 'IIS']",0.0125
+52,BSD,['Firefox'],0.0125
+53,BSD,"['Apache', 'Firefox']",0.0125
+54,BSD,"['IIS', 'Firefox']",0.0125
+55,BSD,"['Apache', 'IIS', 'Firefox']",0.0125
+56,BSD,['Chrome'],0.0125
+57,BSD,"['Apache', 'Chrome']",0.0125
+58,BSD,"['IIS', 'Chrome']",0.0125
+59,BSD,"['Apache', 'IIS', 'Chrome']",0.0125
+60,BSD,"['Firefox', 'Chrome']",0.0125
+61,BSD,"['Apache', 'Firefox', 'Chrome']",0.0125
+62,BSD,"['IIS', 'Firefox', 'Chrome']",0.0125
+63,BSD,"['Apache', 'IIS', 'Firefox', 'Chrome']",0.0125
+64,Google Linux,[],0.0125
+65,Google Linux,['Apache'],0.0125
+66,Google Linux,['IIS'],0.0125
+67,Google Linux,"['Apache', 'IIS']",0.0125
+68,Google Linux,['Firefox'],0.0125
+69,Google Linux,"['Apache', 'Firefox']",0.0125
+70,Google Linux,"['IIS', 'Firefox']",0.0125
+71,Google Linux,"['Apache', 'IIS', 'Firefox']",0.0125
+72,Google Linux,['Chrome'],0.0125
+73,Google Linux,"['Apache', 'Chrome']",0.0125
+74,Google Linux,"['IIS', 'Chrome']",0.0125
+75,Google Linux,"['Apache', 'IIS', 'Chrome']",0.0125
+76,Google Linux,"['Firefox', 'Chrome']",0.0125
+77,Google Linux,"['Apache', 'Firefox', 'Chrome']",0.0125
+78,Google Linux,"['IIS', 'Firefox', 'Chrome']",0.0125
+79,Google Linux,"['Apache', 'IIS', 'Firefox', 'Chrome']",0.0125

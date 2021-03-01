@@ -5,6 +5,8 @@ import plotly
 import plotly.graph_objs as go
 import json
 import ast
+import os, shutil
+import time
 
 import sys
 sys.path.append('scripts/')
@@ -14,6 +16,10 @@ from network_plot import network_plot
 from belief_update import initial_belief_calc, belief_update_one_observation 
 from belief_update import create_observation
 from instructions import st_instruction_page
+from packetToDF import packetToCSV
+from network_belief_update import create_network, create_net_observation
+from network_belief_update import network_initial_configuration
+from network_belief_update import st_network_belief_update
 
 favicon = "icon/favicon.ico"
 st.set_page_config(page_title="Attacker's Belief Update", \
@@ -135,6 +141,83 @@ def st_create_observation():
         pass
 
 
+def try_read_df(f):
+    try:
+        return pd.read_csv(f)
+    except:
+        pass
+    #     return pd.read_excel(f)
+
+
+def st_real_network_prediction():
+    function = st.sidebar.selectbox(
+        'Choose Functionality', ["Upload Observation File", \
+                    "Set Initial Config","Updated Belief Info"])
+
+    if function == "Upload Observation File":
+        filetype = st.sidebar.selectbox(
+        'Choose File Type', ["CSV/Excel", "PCAP File"])
+
+        if filetype == "CSV/Excel":
+            uploaded_file = st.sidebar.file_uploader("Upload a file", accept_multiple_files=False,\
+                                                                    type=("csv", "xls"))
+            if uploaded_file is not None:
+                data = try_read_df(uploaded_file)
+                st.write("Here are the first ten rows of the File")
+                st.table(data.head(10))
+                file_details = {"FileName":uploaded_file.name,"FileType":uploaded_file.type,\
+                                                            "FileSize":uploaded_file.size}
+                st.sidebar.write(file_details)
+                # os.rename(uploaded_file.name, 'network_data.csv')
+                # shutil.move('network_data.csv', '/upload/network_data.csv')
+
+        if filetype == "PCAP File":
+            uploaded_file = st.sidebar.file_uploader("Upload a file", accept_multiple_files=False,\
+                                                                    type=("pcap", "pcapng"))
+            filename = "data/test.pcap"
+            if uploaded_file is not None:
+                with open(filename, "wb") as f:
+                                f.write(uploaded_file.getbuffer())
+                df = packetToCSV()
+                st.write("Shape of the Dataframe is: ", df.shape)
+                st.write("Here are the first ten rows of the File")
+                st.table(df.head(10))
+                file_details = {"FileName":uploaded_file.name,"FileType":uploaded_file.type,\
+                                                            "FileSize":uploaded_file.size}
+                st.sidebar.write(file_details)
+
+    if function == "Set Initial Config":
+        network_initial_configuration()
+
+
+
+
+def st_simulated_network_prediction():
+    function = st.sidebar.selectbox(
+        'Choose Functionality', ["Create Observations", \
+                    "Set Initial Config","Updated Belief Info"])
+
+    if function == "Create Observations":
+        num_of_nodes = int(st.sidebar.text_input("Input Number of Nodes", 10))
+        ip_list = create_network(num_of_nodes)
+        num_of_obs = int(st.sidebar.text_input("Input Number of Observations/Node", 10))
+        st.sidebar.write("Number of total obs = ", num_of_nodes*num_of_obs)
+        obs_df = create_net_observation(num_of_nodes, ip_list, num_of_obs)
+        st.write("Shape of the Observation Table is:", obs_df.shape)
+        st.write("First 20 Created Observations")
+        st.table(obs_df.head(20).assign(remove_index='').set_index('remove_index'))
+
+    if function == "Set Initial Config":
+        network_initial_configuration()
+
+    if function == "Updated Belief Info":
+        start_time = time.time()
+        st_network_belief_update()   
+        stop_time = time.time()
+        st.write("Execution time (seconds): ", stop_time-start_time)
+        
+
+
 
 def st_belief_update():
     st.subheader("Belief Update Process")
@@ -151,8 +234,9 @@ def st_belief_update():
     app_list = conf_data["Apps"].tolist()
     conf_set = [[i,ast.literal_eval(j)] for i,j in zip(os_list,app_list)]
     
-    read_init_belief_set = pd.read_csv(init_conf_data)
-    init_belief_set = read_init_belief_set["Initial Probability"].tolist()
+    # read_init_belief_set = pd.read_csv(init_conf_data)
+    # init_belief_set = read_init_belief_set["Initial Probability"].tolist()
+    init_belief_set = conf_data["Initial Probability"].tolist()
 
     update_target = st.sidebar.selectbox("Target Information (All/filtered Observations)",\
                                     ["OS", "OS+App"])
@@ -233,6 +317,34 @@ def st_belief_update():
         st.write("Only OS related Observations are available")
 
 
+
+def st_node_belief_update():
+    network_df = pd.read_csv(network_data)
+    nodes = network_df["Nodes"].tolist()
+    os_list = network_df["OS"].tolist()
+    App_list = network_df["App"].tolist()
+    confs = [[i,j] for i,j in zip(os_list,App_list)]
+    conf_dic = dict(zip(nodes, confs))
+
+    select_node = st.sidebar.selectbox("Choose a Node", nodes)
+    if select_node:
+        st.sidebar.write("Real Configuration: ", conf_dic[select_node][0]\
+                                        +","+ conf_dic[select_node][1])
+        sub_function = st.sidebar.selectbox("Choose from the following",\
+                                ["Create Observations", "View Observations",\
+                                "Updated Belief Info"])
+
+        if sub_function == "Create Observations":
+            st_create_observation()
+        if sub_function == "View Observations":
+            updated_obs_data = pd.read_csv(observation_data)
+            del updated_obs_data["Unnamed: 0"]
+            st.table(updated_obs_data)
+        if sub_function == "Updated Belief Info":
+            st_belief_update()
+
+
+
 def main():
     # SideBar Settings
     st.sidebar.title("Control Panel")
@@ -242,47 +354,37 @@ def main():
         )
 
     # app functionalities
-    function = st.sidebar.selectbox(
-        'Choose Functionality', ["View Instructions", "Create Network", \
-                    "Initial Belief Config", "Node Belief Update"])
+    primary_function = st.sidebar.selectbox(
+        'Choose App Functionality', ["View Instructions", "Real Network Prediction", \
+                    "Simulated Node Prediction", "Simulated Network Prediction"])
+
 
     # View Instructions by Default
-    if function == "View Instructions":
+    if primary_function == "View Instructions":
         st_instruction_page()
 
-    # create network and show on the dashboard
-    if function == "Create Network":
-        st_create_network()
+    if primary_function == "Real Network Prediction":
+        st_real_network_prediction()
 
-    # create initial configuration and show list to user
-    if function == "Initial Belief Config":
-        st_initial_configuration()
+    if primary_function == "Simulated Network Prediction":
+        st_simulated_network_prediction()
+
+    if primary_function == "Simulated Node Prediction":
+        function = st.sidebar.selectbox(
+        'Choose Functionality', ["Create Network", \
+                    "Initial Belief Config", "Node Belief Update"])
+
+        # create network and show on the dashboard
+        if function == "Create Network":
+            st_create_network()
+
+        # create initial configuration and show list to user
+        if function == "Initial Belief Config":
+            st_initial_configuration()
 
 
-    if function == "Node Belief Update":
-        network_df = pd.read_csv(network_data)
-        nodes = network_df["Nodes"].tolist()
-        os_list = network_df["OS"].tolist()
-        App_list = network_df["App"].tolist()
-        confs = [[i,j] for i,j in zip(os_list,App_list)]
-        conf_dic = dict(zip(nodes, confs))
-
-        select_node = st.sidebar.selectbox("Choose a Node", nodes)
-        if select_node:
-            st.sidebar.write("Real Configuration: ", conf_dic[select_node][0]\
-                                               +","+ conf_dic[select_node][1])
-            sub_function = st.sidebar.selectbox("Choose from the following",\
-                                    ["Create Observations", "View Observations",\
-                                     "Updated Belief Info"])
-
-            if sub_function == "Create Observations":
-                st_create_observation()
-            if sub_function == "View Observations":
-                updated_obs_data = pd.read_csv(observation_data)
-                del updated_obs_data["Unnamed: 0"]
-                st.table(updated_obs_data)
-            if sub_function == "Updated Belief Info":
-                st_belief_update()
+        if function == "Node Belief Update":
+            st_node_belief_update()
         
 
 if __name__ == '__main__':
