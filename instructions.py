@@ -2,27 +2,51 @@ import streamlit as st
 
 def st_instruction_page():
     st.markdown("# Adversarial Belief Update")
-    st.info("> _This app creates a network and helps visualizing the attacker's\
-            belief update_")
+    st.info("> _This app can fingerprint Operating Systems using Bayes Net and Machine \
+                Learning as well as can simulate an Attacker's Intuition (Belief Update) \
+                inside a compromised network_")
 
-    st.markdown("## Step-by-Step Guide")
-    st.markdown("1. Create a Network")
-    st.markdown("2. Input Attacker's Initial Belief Parameters")
-    st.markdown("3. Create Observations for Individual Node")
-    st.markdown("4. See Belief Update (Plot/Table)")
-    st.markdown("")
-    st.markdown("")
+    st.info(
+    """
+    ## Primary Features: 
+    1. Real-life OS Fingerprinting using:
+        * Bayes Network-based Knowledge Base
+        * Multi-Class Classification Algorithms
+    2. Simulated Visualization of Node belief updates
+    3. Simulation of the updated belief for all nodes in a network
+    """)
 
-    st.markdown("### Create a Network")
-    st.markdown("A network will be created once you do the followings:")
-    st.markdown("* Choose Functionality -> Create Network")
-    st.markdown("* Input the Number of Windows Nodes")
-    st.markdown("* Input the Number of Linux Nodes")
-    st.markdown("* Choose the Plot/Table View of the Network")
-    st.markdown("")
-    st.markdown("")
 
-    st.markdown("### Input Attacker's Initial Belief Parameters")
+    st.markdown(
+        """
+        ## Real-Life OS Fingerprinting
+        """
+    )
+
+    st.markdown(
+        """
+        ## Simulated Visualization of Node belief updates
+
+        ### Step-by-Step Guide
+        1. Create a Network
+        2. Input Attacker's Initial Belief Parameters
+        3. Create Observations for Individual Node
+        4. See Belief Update (Plot/Table)
+
+        #### Create a Network
+        A network will be created once you do the followings:
+        * Choose Functionality -> Create Network
+        * Input the Number of Windows Nodes
+        * Input the Number of Linux Nodes
+        * Choose the Plot/Table View of the Network
+        """
+    )
+    
+
+
+    
+
+    st.markdown("#### Input Attacker's Initial Belief Parameters")
     st.markdown("The attacker requires an initial set of Operating Systems (OS)\
                 and an initial set of installed applications (App). Initial \
                 Configuration set is achieved by $O X P(A)$ where $O$ is the \
@@ -35,7 +59,7 @@ def st_instruction_page():
     st.markdown("")
     st.markdown("")
 
-    st.markdown("### Create Observations for Individual Node")
+    st.markdown("#### Create Observations for Individual Node")
     st.markdown("While creating observation for a network node, you can choose observations\
                 based on the real configuration (regular network) or you can choose\
                 observations based on different configurations (deceptive network).")
@@ -49,7 +73,7 @@ def st_instruction_page():
     st.markdown("")
     st.markdown("")
 
-    st.markdown("### See Belief Update (Plot/Table)")
+    st.markdown("#### See Belief Update (Plot/Table)")
     st.markdown("You can see the belief update process using plots/tables")
     st.markdown("* Choose Functionality -> Node Belief Update")
     st.markdown("* Choose a Node")

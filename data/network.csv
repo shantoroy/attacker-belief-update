@@ -1,11 +1,11 @@
 ,Nodes,TTL,WS,OS,App
-0,Node 1,122,8192,Win 7,Chrome
-1,Node 2,111,8192,Win Server 2008,Apache
-2,Node 3,110,8192,Win Server 2008,IIS
-3,Node 4,128,8192,Win Server 2008,Apache
-4,Node 5,126,8192,Win 7,Firefox
-5,Node 6,63,5840,Ubuntu 20.04,Chrome
-6,Node 7,61,5840,Red Hat 8,Apache
-7,Node 8,55,5840,Red Hat 8,Apache
-8,Node 9,54,5840,Ubuntu 20.04,Chrome
-9,Node 10,58,5840,Red Hat 8,Apache
+0,Node 1,128,8192,Win Server 2008,Apache
+1,Node 2,114,8192,Win 7,Firefox
+2,Node 3,116,8192,Win 7,Firefox
+3,Node 4,116,8192,Win Server 2008,Apache
+4,Node 5,121,8192,Win Server 2008,Apache
+5,Node 6,64,5840,Ubuntu 20.04,Chrome
+6,Node 7,61,5840,Ubuntu 20.04,Firefox
+7,Node 8,54,5840,Ubuntu 20.04,Chrome
+8,Node 9,64,5840,Red Hat 8,Apache
+9,Node 10,52,5840,Ubuntu 20.04,Chrome

@@ -88,21 +88,21 @@ def retrieve_attributes(packet):
 	df.loc[len(df)] = pkt_to_list # row of packet attributes on last position of the dataframe
 
 # @st.cache
-def packetToCSV():  
-    pcap_file = "data/test.pcap"
-    try:
-        cap = pyshark.FileCapture(pcap_file, display_filter="tcp")	# filtering out just tcp packets
-        cap.apply_on_packets(retrieve_attributes)
-        asyncio.get_child_watcher().attach_loop(cap.eventloop)
-        cap.close()
+def packetToCSV():
+	pcap_file = "data/test.pcap"
+	try:
+		cap = pyshark.FileCapture(pcap_file, display_filter="tcp")	# filtering out just tcp packets
+		# asyncio.get_child_watcher().attach_loop(cap.eventloop)
+		cap.apply_on_packets(retrieve_attributes)
+		asyncio.get_child_watcher().attach_loop(cap.eventloop)
+		cap.close()
 
-    except Exception as e:
-        # st.write(e)
-        pass
+	except Exception as e:
+		st.write(e)
 
-    # st.table(df.head())
-    df.to_csv('testPacketToCSV.csv', index=None, header=True)
-    return df
+	# st.table(df.head())
+	df.to_csv('data/testPacketToCSV.csv', index=None, header=True)
+	return df
 
 
 

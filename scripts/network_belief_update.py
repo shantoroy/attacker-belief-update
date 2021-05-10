@@ -20,6 +20,7 @@ from packetToDF import packetToCSV
 
 network_init_conf_data = "data/sim_network_init_conf.csv"
 network_observation_data = "data/sim_network_observation.csv"
+real_network_init_conf_data = "data/real_network_init_conf.csv"
 
 features = ['ip', 'ip.ttl', 'tcp.window_size', 'ip.flags.df', 'App']
 winNT6_x = [128, 8192 ,1]
@@ -29,8 +30,15 @@ linK3_11 = [64, 5840, 1]
 bsd = [64, 65535, 1]
 GL = [64, 5720, 1]
 
-win_apps = ["Apache", "IIS", "Firefox", "Chrome", 0]
-lin_apps = ["Apache", "Firefox", "Chrome", 0]
+#test 1
+# win_apps = ["Apache", "IIS", "Firefox", "Chrome", 0]
+# lin_apps = ["Apache", "Firefox", "Chrome", 0]
+# test 2
+win_apps = ["Apache", "IIS", 0]
+lin_apps = ["Apache", 0]
+# #test 3
+# win_apps = [0]
+# lin_apps = [0]
 
 
 def create_network(num_of_nodes):
@@ -78,7 +86,7 @@ def create_net_observation(num_of_nodes, ip_list, num_of_obs):
     return df
 
 
-
+# for simulated network only
 def network_initial_configuration():
     st.subheader("Possible Configurations for Initial Belief")
     st.markdown("This page shows the set of all possible configurations")
@@ -126,6 +134,34 @@ def network_initial_configuration():
     except:
         pass
 
+
+# for real network: considering the three base OS (Win, Linux, macOS), no application
+def real_network_initial_configuration():
+    st.subheader("Possible Configurations for Initial Belief")
+    st.markdown("This page shows the set of all possible configurations")
+
+    os_set = []
+    os_1 = st.sidebar.checkbox("Windows")
+    os_2 = st.sidebar.checkbox("Ubuntu")
+    os_3 = st.sidebar.checkbox("macOS")
+
+    if os_1:
+        os_set.append("Windows")
+    if os_2:
+        os_set.append("Ubuntu")
+    if os_3:
+        os_set.append("macOS")
+
+    app_set = []
+    
+    try:
+        conf_set, init_belief_set = initial_belief_calc(os_set, app_set)
+        df_init_conf = pd.DataFrame(conf_set, columns = ['OS', 'Apps'])
+        df_init_conf["Initial Probability"] = init_belief_set
+        st.table(df_init_conf)
+        df_init_conf.to_csv(real_network_init_conf_data)
+    except:
+        pass
 
 
 
@@ -237,6 +273,7 @@ def st_network_belief_update():
             # st.table(belief_update_df) 
             st.table(sorted_df.head(2)[["Configurations", "Initial Belief", sorted_df.columns[-1]]]) 
         
+
 
 
 def belief_update_one_observation_2f(conf_set, obs, prior_belief_set):

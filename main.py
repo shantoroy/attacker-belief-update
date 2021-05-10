@@ -16,10 +16,12 @@ from network_plot import network_plot
 from belief_update import initial_belief_calc, belief_update_one_observation 
 from belief_update import create_observation
 from instructions import st_instruction_page
-from packetToDF import packetToCSV
 from network_belief_update import create_network, create_net_observation
 from network_belief_update import network_initial_configuration
 from network_belief_update import st_network_belief_update
+
+from sim_network import st_simulated_network_prediction
+from real_network import st_real_network_prediction
 
 favicon = "icon/favicon.ico"
 st.set_page_config(page_title="Attacker's Belief Update", \
@@ -139,82 +141,6 @@ def st_create_observation():
         observation_df.to_csv(observation_data)
     except:
         pass
-
-
-def try_read_df(f):
-    try:
-        return pd.read_csv(f)
-    except:
-        pass
-    #     return pd.read_excel(f)
-
-
-def st_real_network_prediction():
-    function = st.sidebar.selectbox(
-        'Choose Functionality', ["Upload Observation File", \
-                    "Set Initial Config","Updated Belief Info"])
-
-    if function == "Upload Observation File":
-        filetype = st.sidebar.selectbox(
-        'Choose File Type', ["CSV/Excel", "PCAP File"])
-
-        if filetype == "CSV/Excel":
-            uploaded_file = st.sidebar.file_uploader("Upload a file", accept_multiple_files=False,\
-                                                                    type=("csv", "xls"))
-            if uploaded_file is not None:
-                data = try_read_df(uploaded_file)
-                st.write("Here are the first ten rows of the File")
-                st.table(data.head(10))
-                file_details = {"FileName":uploaded_file.name,"FileType":uploaded_file.type,\
-                                                            "FileSize":uploaded_file.size}
-                st.sidebar.write(file_details)
-                # os.rename(uploaded_file.name, 'network_data.csv')
-                # shutil.move('network_data.csv', '/upload/network_data.csv')
-
-        if filetype == "PCAP File":
-            uploaded_file = st.sidebar.file_uploader("Upload a file", accept_multiple_files=False,\
-                                                                    type=("pcap", "pcapng"))
-            filename = "data/test.pcap"
-            if uploaded_file is not None:
-                with open(filename, "wb") as f:
-                                f.write(uploaded_file.getbuffer())
-                df = packetToCSV()
-                st.write("Shape of the Dataframe is: ", df.shape)
-                st.write("Here are the first ten rows of the File")
-                st.table(df.head(10))
-                file_details = {"FileName":uploaded_file.name,"FileType":uploaded_file.type,\
-                                                            "FileSize":uploaded_file.size}
-                st.sidebar.write(file_details)
-
-    if function == "Set Initial Config":
-        network_initial_configuration()
-
-
-
-
-def st_simulated_network_prediction():
-    function = st.sidebar.selectbox(
-        'Choose Functionality', ["Create Observations", \
-                    "Set Initial Config","Updated Belief Info"])
-
-    if function == "Create Observations":
-        num_of_nodes = int(st.sidebar.text_input("Input Number of Nodes", 10))
-        ip_list = create_network(num_of_nodes)
-        num_of_obs = int(st.sidebar.text_input("Input Number of Observations/Node", 10))
-        st.sidebar.write("Number of total obs = ", num_of_nodes*num_of_obs)
-        obs_df = create_net_observation(num_of_nodes, ip_list, num_of_obs)
-        st.write("Shape of the Observation Table is:", obs_df.shape)
-        st.write("First 20 Created Observations")
-        st.table(obs_df.head(20).assign(remove_index='').set_index('remove_index'))
-
-    if function == "Set Initial Config":
-        network_initial_configuration()
-
-    if function == "Updated Belief Info":
-        start_time = time.time()
-        st_network_belief_update()   
-        stop_time = time.time()
-        st.write("Execution time (seconds): ", stop_time-start_time)
         
 
 

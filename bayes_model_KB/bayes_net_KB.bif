@@ -1,0 +1,38 @@
+network unknown {
+}
+variable mss {
+    type discrete [ 2 ] { 0, 1 };
+}
+variable nop {
+    type discrete [ 2 ] { 0, 1 };
+}
+variable os {
+    type discrete [ 3 ] { 0, 1, 2 };
+}
+variable ttl {
+    type discrete [ 3 ] { 0, 1, 2 };
+}
+variable winsize {
+    type discrete [ 4 ] { 0, 1, 2, 3 };
+}
+variable wsc {
+    type discrete [ 2 ] { 0, 1 };
+}
+probability ( mss | os ) {
+    table 0.053, 0.04, 0.03, 0.947, 0.96, 0.97 ;
+}
+probability ( nop | os ) {
+    table 0.17, 0.68, 0.46, 0.83, 0.32, 0.54 ;
+}
+probability ( os ) {
+    table 0.47, 0.41, 0.12 ;
+}
+probability ( ttl | os ) {
+    table 0.01, 0.97, 0.83, 0.99, 0.0, 0.0, 0.0, 0.03, 0.17 ;
+}
+probability ( winsize | os ) {
+    table 0.09, 0.2, 0.48, 0.3, 0.13, 0.0, 0.45, 0.47, 0.0, 0.16, 0.2, 0.52 ;
+}
+probability ( wsc | mss ) {
+    table 0.99, 0.01, 0.01, 0.99 ;
+}
