@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd
-import cufflinks as cf
-import plotly
-import plotly.graph_objs as go
 import json
 import ast
-import os, shutil
+import os
 import random
 import numpy as np
 

@@ -5,7 +5,7 @@ import plotly
 import plotly.graph_objs as go
 import json
 import ast
-import os, shutil
+import os
 import time
 
 import sys

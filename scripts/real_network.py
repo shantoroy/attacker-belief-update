@@ -8,7 +8,7 @@ import joblib
 import numpy as np
 from collections import Counter
 
-from packetToDF import packetToCSV
+# from packetToDF import packetToCSV
 from pcap2DF import pcap2CSV
 from network_belief_update import real_network_initial_configuration
 from bayes_inference import belief_update_one_observation_BN
