@@ -1,6 +1,21 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@File    :   bayes_inference.py
+@Time    :   2021/05/16 18:38:12
+@Author  :   Shanto Roy 
+@Version :   1.0
+@Contact :   sroy10@uh.edu
+@License :   (C)Copyright 2020-2021, Shanto Roy
+@Desc    :   None
+'''
+
+
 
 from pgmpy.readwrite import BIFReader
+from pgmpy.factors.discrete import State
 from pgmpy.inference import VariableElimination
+from pgmpy.sampling import BayesianModelSampling
 import os
 import streamlit as st
 import numpy as np
@@ -80,18 +95,34 @@ def query_value(kb, variable_list, evidence_dict, variable_map):
     return phi
 
 
+
+# def query_likelihood(bayes_net_LW, evidence_dict, variable_map):
+#     evidence = [State(k,v) for k,v in variable_map.items()]
+#     evidence += [State(k,v) for k,v in evidence_dict.items()]
+#     print(evidence)
+#     phi = bayes_net_LW.likelihood_weighted_sample(evidence=evidence, size=1)["_weight"][0]
+#     return float(phi)
+
+
+# for testing
+# db_path = '../bayes_model_KB'
+# ------------------------->
 db_path = 'bayes_model_KB'
 filename = "bayes_net_KB.bif"
 target = os.path.join(db_path, filename)
 reader = BIFReader(target)
 model = reader.get_model()
 bayes_net = VariableElimination(model)
+bayes_net_LW = BayesianModelSampling(model)
+
+
 
 def prob_obs_given_os(obs, system):
     variable_list = [key for key in obs.keys()]
     variable_map = observation_map(obs)
     evidence_dict = os_map(system)
     prob = query_value(bayes_net, variable_list, evidence_dict, variable_map)
+    # prob = query_likelihood(bayes_net_LW, evidence_dict, variable_map)
     return prob
 
 

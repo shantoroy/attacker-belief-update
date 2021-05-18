@@ -1,3 +1,16 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@File    :   network_belief_update.py
+@Time    :   2021/05/16 18:38:01
+@Author  :   Shanto Roy 
+@Version :   1.0
+@Contact :   sroy10@uh.edu
+@License :   (C)Copyright 2020-2021, Shanto Roy
+@Desc    :   None
+'''
+
+
 import streamlit as st
 import pandas as pd
 import json
